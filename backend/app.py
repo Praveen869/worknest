@@ -22,16 +22,16 @@ def patched_get_jwt_identity():
 flask_jwt_extended.get_jwt_identity = patched_get_jwt_identity
 # -----------------------------------------
 
-from config import Config
-from models import db
-from models.user import User
-from models.project import Project
-from models.task import Task
+from .config import Config
+from .models import db
+from .models.user import User
+from .models.project import Project
+from .models.task import Task
 
-from routes.auth import auth_bp
-from routes.projects import projects_bp
-from routes.tasks import tasks_bp
-from routes.dashboard import dashboard_bp
+from .routes.auth import auth_bp
+from .routes.projects import projects_bp
+from .routes.tasks import tasks_bp
+from .routes.dashboard import dashboard_bp
 
 app = Flask(__name__,
     static_folder='../frontend/static',

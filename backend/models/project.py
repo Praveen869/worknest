@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from models import db
+from . import db
 
 project_members = db.Table('project_members',
     db.Column('project_id', db.Integer, db.ForeignKey('projects.id'), primary_key=True),

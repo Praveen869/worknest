@@ -1,9 +1,9 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from datetime import datetime, timezone
-from models.task import Task
-from models.project import Project
-from models.user import User
+from ..models.task import Task
+from ..models.project import Project
+from ..models.user import User
 
 dashboard_bp = Blueprint('dashboard', __name__)
 

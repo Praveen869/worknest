@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from models import db
+from . import db
 
 class Task(db.Model):
     __tablename__ = 'tasks'
