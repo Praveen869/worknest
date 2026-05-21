@@ -42,6 +42,10 @@ app.config.from_object(Config)
 Config.init_app(app)
 
 # Extensions
+# Ensure DATABASE_URL is configured before initializing the DB extension
+if not app.config.get('SQLALCHEMY_DATABASE_URI'):
+    raise RuntimeError('DATABASE_URL is not set. Configure your DATABASE_URL environment variable (e.g. from Railway Postgres plugin)')
+
 db.init_app(app)
 jwt = JWTManager(app)
 
