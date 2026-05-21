@@ -15,6 +15,15 @@ class Config:
     @staticmethod
     def init_app(app):
         db_url = os.environ.get('DATABASE_URL', '')
+        # Normalize older Heroku-style URL and prefer a pure-Python driver (pg8000)
         if db_url.startswith('postgres://'):
-            os.environ['DATABASE_URL'] = db_url.replace('postgres://', 'postgresql://', 1)
-            app.config['SQLALCHEMY_DATABASE_URI'] = os.environ['DATABASE_URL']
+            db_url = db_url.replace('postgres://', 'postgresql://', 1)
+
+        # If the URL uses plain postgresql://, rewrite to postgresql+pg8000://
+        # so SQLAlchemy picks the pure-Python `pg8000` driver (avoids libpq).
+        if db_url.startswith('postgresql://') and 'pg8000' not in db_url:
+            db_url = db_url.replace('postgresql://', 'postgresql+pg8000://', 1)
+
+        if db_url:
+            os.environ['DATABASE_URL'] = db_url
+            app.config['SQLALCHEMY_DATABASE_URI'] = db_url
