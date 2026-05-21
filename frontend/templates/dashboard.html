@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>WorkNest - Dashboard</title>
+        <link rel="stylesheet" href="/static/css/style.css">
+    </head>
+
+    <body>
+        <div class="app-layout">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-logo">🪺 WorkNest</div>
+                <nav class="sidebar-nav">
+                    <a href="/dashboard" class="nav-item active">📊 Dashboard</a>
+                    <a href="/projects" class="nav-item">📁 Projects</a>
+                    <a href="/tasks" class="nav-item">✅ Tasks</a>
+                </nav>
+                <div class="sidebar-footer">
+                    <div id="user-info"></div>
+                    <button class="btn btn-outline btn-logout w-full" onclick="logout()">Logout</button>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <div class="page-header">
+                    <h2>Dashboard</h2>
+                    <p>Welcome back, <span id="user-name"></span>!</p>
+                </div>
+
+                <!-- Stats Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📋</div>
+                        <div class="stat-info">
+                            <h3 id="total-tasks">0</h3>
+                            <p>Total Tasks</p>
+                        </div>
+                    </div>
+                    <div class="stat-card todo">
+                        <div class="stat-icon">🔵</div>
+                        <div class="stat-info">
+                            <h3 id="todo-tasks">0</h3>
+                            <p>To Do</p>
+                        </div>
+                    </div>
+                    <div class="stat-card in-progress">
+                        <div class="stat-icon">🟡</div>
+                        <div class="stat-info">
+                            <h3 id="inprogress-tasks">0</h3>
+                            <p>In Progress</p>
+                        </div>
+                    </div>
+                    <div class="stat-card done">
+                        <div class="stat-icon">🟢</div>
+                        <div class="stat-info">
+                            <h3 id="done-tasks">0</h3>
+                            <p>Done</p>
+                        </div>
+                    </div>
+                    <div class="stat-card overdue">
+                        <div class="stat-icon">🔴</div>
+                        <div class="stat-info">
+                            <h3 id="overdue-tasks">0</h3>
+                            <p>Overdue</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📁</div>
+                        <div class="stat-info">
+                            <h3 id="total-projects">0</h3>
+                            <p>Projects</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Tasks -->
+                <div class="section">
+                    <h3>Recent Tasks</h3>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Status</th>
+                                    <th>Priority</th>
+                                    <th>Deadline</th>
+                                </tr>
+                            </thead>
+                            <tbody id="recent-tasks-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+        <script src="/static/js/main.js"></script>
+        <script src="/static/js/dashboard.js"></script>
+    </body>
+
+    </html>
