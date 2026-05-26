@@ -36,6 +36,10 @@ class Config:
                 if 'localhost' not in db_url and '127.0.0.1' not in db_url:
                     import ssl
                     ssl_context = ssl.create_default_context()
+                    # Bypass certificate verification for self-signed certificates (common in Railway/internal DBs)
+                    ssl_context.check_hostname = False
+                    ssl_context.verify_mode = ssl.CERT_NONE
+                    
                     app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
                         "connect_args": {
                             "ssl_context": ssl_context
