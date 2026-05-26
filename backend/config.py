@@ -25,5 +25,22 @@ class Config:
             db_url = db_url.replace('postgresql://', 'postgresql+pg8000://', 1)
 
         if db_url:
+            # Strip any query parameters like ?sslmode=require for pg8000
+            # because pg8000 uses standard Python ssl_context instead of sslmode kwarg
+            if 'pg8000' in db_url:
+                import re
+                db_url = re.sub(r'[&?]sslmode=[^&]*', '', db_url)
+                
+                # Configure SSL Context only for remote databases (not localhost/127.0.0.1)
+                # to prevent local development database connection from failing.
+                if 'localhost' not in db_url and '127.0.0.1' not in db_url:
+                    import ssl
+                    ssl_context = ssl.create_default_context()
+                    app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+                        "connect_args": {
+                            "ssl_context": ssl_context
+                        }
+                    }
+
             os.environ['DATABASE_URL'] = db_url
             app.config['SQLALCHEMY_DATABASE_URI'] = db_url
