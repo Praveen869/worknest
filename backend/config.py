@@ -25,11 +25,11 @@ class Config:
             db_url = db_url.replace('postgresql://', 'postgresql+pg8000://', 1)
 
         if db_url:
-            # Strip any query parameters like ?sslmode=require for pg8000
-            # because pg8000 uses standard Python ssl_context instead of sslmode kwarg
+            # Strip all query parameters for pg8000
+            # because pg8000 uses standard Python ssl_context and may choke on other params
             if 'pg8000' in db_url:
-                import re
-                db_url = re.sub(r'[&?]sslmode=[^&]*', '', db_url)
+                if '?' in db_url:
+                    db_url = db_url.split('?')[0]
                 
                 # Configure SSL Context only for remote databases (not localhost/127.0.0.1)
                 # to prevent local development database connection from failing.
