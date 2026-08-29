@@ -11,6 +11,8 @@ class Config:
     JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'worknest-jwt-secret')
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=24)
     JWT_VERIFY_SUB = False
+    REDIS_URL = os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+
 
     @staticmethod
     def init_app(app):

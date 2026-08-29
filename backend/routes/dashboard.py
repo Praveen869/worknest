@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 from ..models.task import Task
 from ..models.project import Project
 from ..models.user import User
+from ..cache import get_cache, set_cache
 
 dashboard_bp = Blueprint('dashboard', __name__)
 
@@ -14,6 +15,12 @@ def get_dashboard():
     user = User.query.get(current_user['id'])
     if not user:
         return jsonify({'error': 'User not found'}), 404
+
+    cache_key = f"dashboard:user:{current_user['id']}"
+    cached_data = get_cache(cache_key)
+    if cached_data:
+        cached_data['cached'] = True
+        return jsonify(cached_data), 200
 
     now = datetime.now(timezone.utc).replace(tzinfo=None)
 
@@ -45,7 +52,7 @@ def get_dashboard():
             assigned_to=current_user['id']
         ).order_by(Task.created_at.desc()).limit(5).all()
 
-    return jsonify({
+    response_data = {
         'total_tasks': total_tasks,
         'todo': todo,
         'in_progress': in_progress,
@@ -53,5 +60,11 @@ def get_dashboard():
         'overdue': overdue,
         'total_projects': total_projects,
         'total_members': total_members,
-        'recent_tasks': [t.to_dict() for t in recent_tasks]
-    }), 200
+        'recent_tasks': [t.to_dict() for t in recent_tasks],
+        'cached': False
+    }
+
+    # Store in Redis cache for 5 minutes (300s)
+    set_cache(cache_key, response_data, ttl=300)
+
+    return jsonify(response_data), 200

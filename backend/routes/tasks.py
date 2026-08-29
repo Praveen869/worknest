@@ -5,8 +5,10 @@ from ..models import db
 from ..models.task import Task
 from ..models.project import Project
 from ..models.user import User
+from ..cache import delete_cache_pattern
 
 tasks_bp = Blueprint('tasks', __name__)
+
 
 def admin_required(fn):
     from functools import wraps
@@ -80,6 +82,7 @@ def create_task():
 
     db.session.add(task)
     db.session.commit()
+    delete_cache_pattern('dashboard:*')
     return jsonify(task.to_dict()), 201
 
 
@@ -114,6 +117,7 @@ def update_task(task_id):
         task.status = data['status']
 
     db.session.commit()
+    delete_cache_pattern('dashboard:*')
     return jsonify(task.to_dict()), 200
 
 
@@ -124,4 +128,5 @@ def delete_task(task_id):
     task = Task.query.get_or_404(task_id)
     db.session.delete(task)
     db.session.commit()
-    return jsonify({'message': 'Task deleted'}), 200
+    delete_cache_pattern('dashboard:*')
+    return jsonify({'message': 'Task deleted'}), 200

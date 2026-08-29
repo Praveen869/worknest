@@ -3,8 +3,10 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..models import db
 from ..models.project import Project
 from ..models.user import User
+from ..cache import delete_cache_pattern
 
 projects_bp = Blueprint('projects', __name__)
+
 
 def admin_required(fn):
     from functools import wraps
@@ -56,6 +58,7 @@ def create_project():
 
         db.session.add(project)
         db.session.commit()
+        delete_cache_pattern('dashboard:*')
 
         return jsonify(project.to_dict()), 201
     except Exception as e:
@@ -81,6 +84,7 @@ def update_project(project_id):
             project.deadline = datetime.fromisoformat(data['deadline'])
 
         db.session.commit()
+        delete_cache_pattern('dashboard:*')
         return jsonify(project.to_dict()), 200
     except Exception as e:
         import traceback
@@ -95,6 +99,7 @@ def delete_project(project_id):
     project = Project.query.get_or_404(project_id)
     db.session.delete(project)
     db.session.commit()
+    delete_cache_pattern('dashboard:*')
     return jsonify({'message': 'Project deleted'}), 200
 
 
@@ -114,6 +119,7 @@ def add_member(project_id):
 
     project.members.append(user)
     db.session.commit()
+    delete_cache_pattern('dashboard:*')
     return jsonify(project.to_dict()), 200
 
 
@@ -129,4 +135,5 @@ def remove_member(project_id, user_id):
 
     project.members.remove(user)
     db.session.commit()
-    return jsonify(project.to_dict()), 200
+    delete_cache_pattern('dashboard:*')
+    return jsonify(project.to_dict()), 200
