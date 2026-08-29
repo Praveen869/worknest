@@ -4,9 +4,10 @@ from datetime import datetime, timezone
 from ..models.task import Task
 from ..models.project import Project
 from ..models.user import User
-from ..cache import get_cache, set_cache
+from ..cache import get_cache, set_cache, get_last_cache_status
 
 dashboard_bp = Blueprint('dashboard', __name__)
+
 
 @dashboard_bp.route('/', methods=['GET'])
 @jwt_required()
@@ -61,8 +62,10 @@ def get_dashboard():
         'total_projects': total_projects,
         'total_members': total_members,
         'recent_tasks': [t.to_dict() for t in recent_tasks],
-        'cached': False
+        'cached': False,
+        'cache_status': get_last_cache_status()
     }
+
 
     # Store in Redis cache for 5 minutes (300s)
     set_cache(cache_key, response_data, ttl=300)
